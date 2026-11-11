@@ -2,6 +2,8 @@
 
 交互式复习地图，收录 58 个历史事件、会议和理论节点。可切换史纲、毛中特、马原或全部，按年份拖动时间轴，或以不同倍速正放和倒放。事件背景、考点和地点随时间轴更新。
 
+[在浏览器打开考研政治可视化时间轴](https://dfgsdreegdertf.github.io/kaoyan-politics-timeline/)
+
 ## 离线打开
 
 在 GitHub 打开 [index.html](./index.html)，使用文件页的 **Download raw file** 下载，然后用浏览器打开本地文件。地图、事件、样式和脚本都在这一份 HTML 里，断网也可以使用。
