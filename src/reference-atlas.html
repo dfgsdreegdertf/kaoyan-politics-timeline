@@ -1,0 +1,856 @@
+<section id="exam-history-atlas" aria-label="考研政治可视化时间轴">
+  <header class="atlas-header">
+    <div class="atlas-heading">
+      <div class="display-year"></div>
+      <div class="heading-copy">
+        <h2>考研政治 <span>·</span> 可视化时间轴</h2>
+        <p class="heading-period"></p>
+      </div>
+      <button type="button" class="sidebar-toggle" aria-pressed="false">隐藏侧栏</button>
+    </div>
+    <div class="atlas-controls">
+      <div class="transport" role="group" aria-label="播放控制">
+        <button type="button" data-action="previous" aria-label="上一个事件">‹</button>
+        <button type="button" data-action="play" aria-pressed="false">▶ 播放</button>
+        <button type="button" data-action="next" aria-label="下一个事件">›</button>
+        <select aria-label="播放速度" class="speed">
+          <option value="0.5">0.5×</option><option value="1" selected>1×</option>
+          <option value="2">2×</option><option value="4">4×</option>
+        </select>
+        <button type="button" data-action="direction" aria-pressed="false">→ 正放</button>
+      </div>
+      <div class="atlas-settings" role="group" aria-label="地图和时间轴选项">
+        <label><input type="checkbox" class="slow" checked> 节点减速</label>
+        <label><input type="checkbox" class="basemap" checked> 地图背景</label>
+        <label><input type="checkbox" class="distribution" checked> 阶段分布</label>
+        <label><input type="checkbox" class="labels" checked> 地名</label>
+        <label><input type="checkbox" class="hints" checked> 提示</label>
+      </div>
+      <div class="atlas-subjects" role="group" aria-label="切换科目">
+        <button type="button" data-subject="history" aria-pressed="true">史纲</button>
+        <button type="button" data-subject="theory" aria-pressed="false">毛中特</button>
+        <button type="button" data-subject="marx" aria-pressed="false">马原</button>
+        <button type="button" data-subject="all" aria-pressed="false">全部</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="atlas-map" role="region" aria-label="事件地理地图">
+    <div class="map-title" aria-hidden="true"><strong></strong><span></span></div>
+    <div class="map-viewport">
+      <div class="map-plane">
+        <svg class="map-geometry" viewBox="0 0 600 475" preserveAspectRatio="none" aria-hidden="true">
+          <path class="map-grid"></path><path class="map-land"></path><path class="map-borders"></path>
+          <g class="map-regions"></g><path class="map-extra"></path><path class="map-guide"></path>
+        </svg>
+        <div class="map-labels" aria-hidden="true"></div>
+        <div class="map-points"></div>
+      </div>
+    </div>
+    <div class="map-zoom" role="group" aria-label="地图缩放">
+      <button type="button" data-zoom="in" aria-label="放大地图">+</button>
+      <button type="button" data-zoom="out" aria-label="缩小地图">−</button>
+      <button type="button" data-zoom="reset">复位</button>
+    </div>
+    <small class="map-attribution"></small>
+  </div>
+
+  <div class="atlas-timeline" role="region" aria-label="交互时间轴">
+    <div class="timeline-periods" aria-label="跳到历史阶段"></div>
+    <div class="rail">
+      <div class="rail-base"></div>
+      <div class="rail-ticks" aria-hidden="true"></div>
+      <div class="rail-needle" aria-hidden="true"></div>
+      <div class="rail-current" aria-hidden="true"></div>
+      <input class="rail-input" aria-label="拖动时间轴" type="range" step="any" min="1836" max="2023" value="1842">
+      <div class="rail-events" role="group" aria-label="时间轴事件"></div>
+    </div>
+  </div>
+
+  <article class="atlas-detail">
+    <p class="detail-kicker"></p>
+    <h3 class="detail-title"></h3>
+    <p class="detail-meta"></p>
+    <div class="detail-section">
+      <h4>历史背景</h4>
+      <p class="detail-fact"></p>
+    </div>
+    <div class="detail-section detail-highlight">
+      <h4>关键考点</h4>
+      <p class="detail-exam"></p>
+    </div>
+  </article>
+
+  <aside class="atlas-sidebar" aria-label="事件定位与考点关联">
+    <section class="sidebar-card">
+      <h4>事件定位</h4>
+      <p class="location-date"></p>
+      <p class="location-name"></p>
+      <p class="location-place"></p>
+    </section>
+    <section class="sidebar-card area-card">
+      <h4 class="area-heading"></h4>
+      <p class="area-title"></p>
+      <ul class="area-legend"><li>当前事件</li><li class="legend-distribution">本阶段有事件的地区</li></ul>
+      <p class="area-description"></p>
+    </section>
+    <section class="sidebar-card related-card">
+      <h4>考点关联</h4>
+      <div class="related-events"></div>
+    </section>
+  </aside>
+  <p class="atlas-help">空格 播放或暂停 <span>·</span> ← → 切换事件 <span>·</span> 拖动时间轴切换年份 <span>·</span> 滚轮缩放地图或时间轴</p>
+</section>
+<style>
+  #exam-history-atlas {
+    color-scheme: dark;
+    --bg: #0a0b12; --header: #0d0e16; --card: #12131d; --border: #292a38;
+    --text: #eef0f7; --muted: #a5a7b7; --dim: #777b91; --gold: #e7cd76;
+    --gold-dim: #8c7538; --blue: #86b8e8; --region: #453c24; --region-hot: #6d572c;
+    box-sizing: border-box; display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 1.82fr) minmax(0, .98fr);
+    grid-template-areas: "header header header" "detail map sidebar" "timeline timeline timeline" "help help help";
+    gap: 0 12px; padding-inline: 15px;
+    background: var(--bg); color: var(--text); font: 14px/1.5 "Microsoft YaHei", "PingFang SC", sans-serif;
+    border: 1px solid #222330; border-radius: 12px; overflow: hidden;
+  }
+  #exam-history-atlas *, #exam-history-atlas *::before, #exam-history-atlas *::after { box-sizing: border-box; }
+  #exam-history-atlas [hidden] { display: none !important; }
+  #exam-history-atlas p, #exam-history-atlas h2, #exam-history-atlas h3,
+  #exam-history-atlas h4, #exam-history-atlas ul { margin: 0; }
+  #exam-history-atlas button, #exam-history-atlas select {
+    background: #151621; color: var(--muted); font: inherit; border: 1px solid var(--border); border-radius: 5px;
+  }
+  #exam-history-atlas button { cursor: pointer; }
+  #exam-history-atlas button:hover { color: var(--text); border-color: #5c5e74; }
+  #exam-history-atlas button:focus-visible, #exam-history-atlas input:focus-visible, #exam-history-atlas select:focus-visible {
+    outline: 2px solid var(--gold); outline-offset: 2px;
+  }
+  #exam-history-atlas .atlas-header {
+    grid-area: header; margin-inline: -15px; padding: 12px 15px 10px; background: var(--header);
+    border-bottom: 1px solid #20212b;
+  }
+  #exam-history-atlas .atlas-heading { display: flex; align-items: center; gap: 16px; }
+  #exam-history-atlas .display-year {
+    font: 400 clamp(43px, 5.8vw, 64px)/.98 Georgia, "Times New Roman", serif; font-variant-numeric: tabular-nums;
+  }
+  #exam-history-atlas .heading-copy { flex: 1; min-width: 0; }
+  #exam-history-atlas h2 { font-size: 17px; letter-spacing: .09em; font-weight: 680; }
+  #exam-history-atlas h2 span { color: var(--gold); }
+  #exam-history-atlas .heading-period { color: var(--dim); font-size: 12px; margin-top: 4px; }
+  #exam-history-atlas .sidebar-toggle { align-self: start; padding: 6px 9px; font-size: 12px; }
+  #exam-history-atlas .atlas-controls {
+    display: flex; flex-wrap: wrap; align-items: center; column-gap: 12px; row-gap: 7px; margin-top: 11px;
+  }
+  #exam-history-atlas .transport, #exam-history-atlas .atlas-settings, #exam-history-atlas .atlas-subjects {
+    display: flex; gap: 5px; align-items: center; font-size: 12px;
+  }
+  #exam-history-atlas .transport button, #exam-history-atlas .transport select {
+    height: 32px; padding: 0 8px; white-space: nowrap;
+  }
+  #exam-history-atlas .transport button:first-child, #exam-history-atlas .transport button:nth-child(3) { min-width: 30px; font-size: 18px; }
+  #exam-history-atlas .atlas-settings { flex-wrap: wrap; gap: 7px; color: var(--muted); }
+  #exam-history-atlas .atlas-settings label { display: flex; align-items: center; gap: 3px; white-space: nowrap; }
+  #exam-history-atlas .atlas-settings input { accent-color: #7899cd; margin: 0; }
+  #exam-history-atlas .atlas-settings .slow { accent-color: #c3a74d; }
+  #exam-history-atlas .atlas-subjects {
+    border: 1px solid var(--border); border-radius: 6px; gap: 0; margin-left: auto; overflow: hidden;
+  }
+  #exam-history-atlas .atlas-subjects button { border: 0; border-radius: 0; background: transparent; min-height: 31px; padding: 0 11px; }
+  #exam-history-atlas .atlas-subjects button + button { border-left: 1px solid var(--border); }
+  #exam-history-atlas .atlas-subjects button[aria-pressed="true"] { color: var(--gold); background: #2b2418; font-weight: 650; }
+
+  #exam-history-atlas .atlas-detail, #exam-history-atlas .atlas-map, #exam-history-atlas .atlas-sidebar { margin-block: 14px; min-width: 0; }
+  #exam-history-atlas .atlas-detail {
+    grid-area: detail; align-self: stretch; min-height: 359px; position: relative; padding: 20px 16px;
+    background: var(--card); border: 1px solid #383122; border-left: 2px solid var(--gold-dim); border-radius: 7px;
+  }
+  #exam-history-atlas .atlas-detail::before {
+    content: ""; position: absolute; right: 0; top: 0; width: 24px; height: 24px;
+    background: linear-gradient(45deg, transparent 49%, #2d2618 50%); border-radius: 0 7px 0 0;
+  }
+  #exam-history-atlas .detail-kicker { color: var(--gold); font-size: 12px; letter-spacing: .12em; }
+  #exam-history-atlas .detail-title { font-size: clamp(20px, 2.6vw, 31px); line-height: 1.25; margin-block: 10px 7px; overflow-wrap: anywhere; }
+  #exam-history-atlas .detail-meta { color: var(--dim); font-size: 12px; }
+  #exam-history-atlas .detail-section { margin-top: 17px; }
+  #exam-history-atlas .detail-section h4 { color: var(--muted); font-size: 13px; letter-spacing: .045em; }
+  #exam-history-atlas .detail-section p { margin-top: 7px; color: #c8cbd8; line-height: 1.8; overflow-wrap: anywhere; }
+  #exam-history-atlas .detail-highlight { border-left: 1px solid var(--gold-dim); padding-left: 10px; }
+  #exam-history-atlas .detail-highlight h4, #exam-history-atlas .detail-highlight p { color: var(--gold); }
+
+  #exam-history-atlas .atlas-map {
+    grid-area: map; align-self: stretch; min-height: 406px; position: relative; isolation: isolate; overflow: hidden;
+    background: radial-gradient(ellipse at center, #151720, #0b0c14 73%);
+  }
+  #exam-history-atlas .map-title { position: absolute; top: 0; left: 1px; display: grid; z-index: 1; pointer-events: none; }
+  #exam-history-atlas .map-title strong {
+    color: #a9965940; font: 650 clamp(24px, 3.65vw, 42px)/1.1 "Microsoft YaHei", sans-serif; letter-spacing: .16em;
+  }
+  #exam-history-atlas .map-title span { margin-top: 6px; color: #9c906565; font-size: 11px; letter-spacing: .09em; }
+  #exam-history-atlas .map-viewport {
+    position: absolute; inset: 28px 0 14px; display: grid; place-items: center; cursor: grab; overflow: hidden;
+    touch-action: pan-y;
+  }
+  #exam-history-atlas .map-viewport.is-panning { cursor: grabbing; }
+  #exam-history-atlas .map-plane { position: relative; width: min(100%, 610px); aspect-ratio: 600 / 475; transform-origin: center; }
+  #exam-history-atlas .map-geometry, #exam-history-atlas .map-labels, #exam-history-atlas .map-points {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  #exam-history-atlas .map-geometry, #exam-history-atlas .map-labels { pointer-events: none; }
+  #exam-history-atlas .map-geometry path { vector-effect: non-scaling-stroke; }
+  #exam-history-atlas .map-grid { fill: none; stroke: #262a3d; stroke-width: .55; opacity: .65; }
+  #exam-history-atlas .map-land { fill: #151d2b; stroke: #364052; stroke-width: .55; }
+  #exam-history-atlas .atlas-map[data-region="china"] .map-land { opacity: .42; }
+  #exam-history-atlas .map-borders { fill: none; stroke: #485264; stroke-width: .8; }
+  #exam-history-atlas .map-regions path { fill: var(--region); stroke: #96908965; stroke-width: .55; }
+  #exam-history-atlas .map-regions path.is-hot { fill: var(--region-hot); }
+  #exam-history-atlas .map-extra { fill: #a5a8b0; }
+  #exam-history-atlas .map-guide { fill: none; stroke: #a6b8d4; stroke-width: 1; stroke-dasharray: 3 4; opacity: .48; }
+  #exam-history-atlas .map-viewport.no-map .map-geometry, #exam-history-atlas .map-viewport.no-map .map-labels { visibility: hidden; }
+  #exam-history-atlas .geo-label {
+    position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%);
+    white-space: nowrap; color: #e0dfd4; font-size: 11px; text-shadow: 0 1px 2px #000, 0 0 3px #000;
+  }
+  #exam-history-atlas .map-dot {
+    position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%);
+    display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; background: transparent;
+  }
+  #exam-history-atlas .map-dot i {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px #d8af5347;
+  }
+  #exam-history-atlas .map-dot.is-current { z-index: 2; }
+  #exam-history-atlas .map-dot.is-current i {
+    width: 10px; height: 10px; background: #fff2ac; border: 2px solid #9b742a; box-shadow: 0 0 0 1px #f9de86, 0 0 12px #e9c75d;
+  }
+  #exam-history-atlas .map-dot span {
+    position: absolute; left: calc(50% + 8px); width: max-content; max-width: 160px; padding: 2px 5px;
+    border: 1px solid #6e654778; background: #10111a; color: var(--text); border-radius: 4px; font-size: 11px;
+  }
+  #exam-history-atlas .map-dot.left span { left: auto; right: calc(50% + 8px); }
+  #exam-history-atlas .map-zoom { position: absolute; right: 5px; bottom: 25px; display: grid; gap: 4px; z-index: 3; }
+  #exam-history-atlas .map-zoom button { min-width: 31px; min-height: 30px; }
+  #exam-history-atlas .map-zoom button:last-child { font-size: 11px; }
+  #exam-history-atlas .map-attribution {
+    position: absolute; right: 2px; bottom: 3px; color: var(--dim); font-size: 11px;
+    padding-inline: 4px; background: #0b0c14d9; pointer-events: none;
+  }
+
+  #exam-history-atlas .atlas-sidebar { grid-area: sidebar; align-self: end; display: grid; gap: 8px; }
+  #exam-history-atlas .sidebar-card {
+    min-width: 0; padding: 12px; background: var(--card); border: 1px solid var(--border); border-left: 2px solid #557ca7;
+    border-radius: 7px; overflow-wrap: anywhere;
+  }
+  #exam-history-atlas .sidebar-card h4 { color: var(--blue); font-size: 12px; font-weight: 500; letter-spacing: .075em; }
+  #exam-history-atlas .sidebar-card p { margin-top: 5px; }
+  #exam-history-atlas .location-date, #exam-history-atlas .location-place { color: var(--muted); font-size: 12px; }
+  #exam-history-atlas .location-name, #exam-history-atlas .area-title { font-size: 15px; font-weight: 650; }
+  #exam-history-atlas .area-card { border-left-color: var(--gold-dim); }
+  #exam-history-atlas .area-card h4 { color: var(--gold); }
+  #exam-history-atlas .area-legend { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 7px; }
+  #exam-history-atlas .area-legend li { color: var(--muted); font-size: 11px; }
+  #exam-history-atlas .area-legend li::before {
+    content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 4px; border-radius: 2px; background: var(--gold);
+  }
+  #exam-history-atlas .area-legend .legend-distribution::before { background: var(--region-hot); border: 1px solid #a4a4b578; }
+  #exam-history-atlas .area-description { color: var(--dim); font-size: 11px; }
+  #exam-history-atlas .related-events { display: grid; gap: 5px; margin-top: 6px; }
+  #exam-history-atlas .related-events button {
+    background: transparent; padding: 4px 0; border: 0; text-align: left; color: #ced1e0; font-size: 12px;
+  }
+  #exam-history-atlas .related-events button span { display: block; font-size: 11px; color: var(--dim); }
+
+  #exam-history-atlas .atlas-timeline {
+    grid-area: timeline; margin-inline: -15px; padding: 8px 23px 0; border-top: 1px solid #232430;
+  }
+  #exam-history-atlas .timeline-periods { position: relative; height: 25px; margin: 0 2px; }
+  #exam-history-atlas .timeline-periods button {
+    position: absolute; left: var(--left); width: var(--span); text-align: left; overflow: hidden; white-space: nowrap;
+    padding: 0 3px 3px; border: 0; border-bottom: 1px solid #66562970; border-radius: 0; background: transparent;
+    color: #ae985b; font-size: 11px; letter-spacing: .1em;
+  }
+  #exam-history-atlas .rail { position: relative; height: 93px; --axis: 43px; --progress: 0%; }
+  #exam-history-atlas .rail-base {
+    position: absolute; top: var(--axis); height: 2px; width: 100%;
+    background: linear-gradient(90deg, #7c692e var(--progress), #30313e var(--progress));
+  }
+  #exam-history-atlas .rail-ticks, #exam-history-atlas .rail-events { position: absolute; inset: 0; pointer-events: none; }
+  #exam-history-atlas .rail-tick {
+    position: absolute; left: var(--x); top: 44px; transform: translateX(-50%);
+    padding-top: 6px; color: var(--dim); font-size: 11px; font-variant-numeric: tabular-nums;
+  }
+  #exam-history-atlas .rail-tick::before { position: absolute; left: 50%; top: 0; content: ""; width: 1px; height: 4px; background: #57596a; }
+  #exam-history-atlas .rail-needle {
+    position: absolute; z-index: 3; pointer-events: none; top: 16px; left: var(--progress);
+    height: 54px; width: 1px; background: #fafbff;
+  }
+  #exam-history-atlas .rail-needle::before {
+    position: absolute; left: -3px; top: 24px; content: ""; width: 7px; height: 7px; border-radius: 50%; background: #fff;
+  }
+  #exam-history-atlas .rail-needle::after {
+    position: absolute; content: ""; left: -4px; top: 53px;
+    border-top: 8px solid #fafbff; border-left: 4px solid transparent; border-right: 4px solid transparent;
+  }
+  #exam-history-atlas .rail-current {
+    position: absolute; z-index: 4; pointer-events: none;
+    left: clamp(62px, var(--selected-label, 50%), calc(100% - 62px)); top: 0;
+    transform: translateX(-50%); max-width: 46%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    font-size: 12px; color: var(--text); background: var(--bg); font-weight: 650; padding-inline: 4px;
+  }
+  #exam-history-atlas .rail-input {
+    appearance: none; position: absolute; left: -1px; width: calc(100% + 2px); top: 17px; height: 53px;
+    z-index: 1; margin: 0; border: 0; background: transparent; cursor: ew-resize; touch-action: pan-y;
+  }
+  #exam-history-atlas .rail-input::-webkit-slider-runnable-track { background: transparent; }
+  #exam-history-atlas .rail-input::-webkit-slider-thumb { appearance: none; width: 2px; height: 49px; background: transparent; }
+  #exam-history-atlas .rail-input::-moz-range-thumb { width: 2px; height: 49px; border: 0; background: transparent; }
+  #exam-history-atlas .rail-events { z-index: 2; }
+  #exam-history-atlas .rail-event {
+    position: absolute; left: var(--x); top: 44px; transform: translate(-50%, -50%);
+    display: grid; place-items: center; width: 14px; height: 19px; padding: 0; border: 0; background: transparent;
+    pointer-events: auto; touch-action: pan-y;
+  }
+  #exam-history-atlas .rail-event i { width: 6px; height: 6px; border-radius: 50%; background: #aa8a39; }
+  #exam-history-atlas .rail-event[aria-pressed="true"] i { width: 10px; height: 10px; background: #fff1ab; box-shadow: 0 0 0 2px #aa8a39; }
+  #exam-history-atlas .rail-caption {
+    position: absolute; pointer-events: none; left: var(--x); top: 71px; transform: translateX(-50%);
+    color: var(--dim); font-size: 11px; white-space: nowrap;
+  }
+  #exam-history-atlas .rail-caption.is-above { top: 5px; }
+  #exam-history-atlas .atlas-help {
+    grid-area: help; margin-inline: -15px; padding: 5px 12px 7px; border-top: 1px solid #20212b;
+    text-align: center; color: var(--dim); font-size: 11px; overflow-wrap: anywhere;
+  }
+  #exam-history-atlas .atlas-help span { margin-inline: 4px; }
+  #exam-history-atlas.hide-sidebars { grid-template-columns: 1fr; grid-template-areas: "header" "map" "timeline" "help"; }
+  #exam-history-atlas.hide-sidebars .atlas-detail, #exam-history-atlas.hide-sidebars .atlas-sidebar { display: none; }
+  #exam-history-atlas.hide-sidebars .atlas-map { min-height: 480px; }
+  @media (max-width: 790px) {
+    #exam-history-atlas { grid-template-columns: minmax(0, .92fr) minmax(0, 1.65fr); grid-template-areas: "header header" "detail map" "timeline timeline" "sidebar sidebar" "help help"; }
+    #exam-history-atlas .atlas-sidebar { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+    #exam-history-atlas .atlas-subjects { margin-left: 0; }
+  }
+  @media (max-width: 530px) {
+    #exam-history-atlas { grid-template-columns: minmax(0, 1fr); grid-template-areas: "header" "map" "timeline" "detail" "sidebar" "help"; }
+    #exam-history-atlas .atlas-heading { gap: 10px; }
+    #exam-history-atlas .display-year { font-size: 38px; }
+    #exam-history-atlas h2 { font-size: 14px; letter-spacing: .025em; }
+    #exam-history-atlas .heading-period { font-size: 11px; }
+    #exam-history-atlas .sidebar-toggle { padding: 5px; white-space: nowrap; }
+    #exam-history-atlas .atlas-controls { gap: 9px; }
+    #exam-history-atlas .atlas-subjects { order: -1; width: 100%; }
+    #exam-history-atlas .atlas-subjects button { flex: 1; min-height: 36px; }
+    #exam-history-atlas .transport button, #exam-history-atlas .transport select { height: 36px; }
+    #exam-history-atlas .atlas-settings { font-size: 11px; }
+    #exam-history-atlas .atlas-map, #exam-history-atlas.hide-sidebars .atlas-map { min-height: 278px; margin-block: 7px; }
+    #exam-history-atlas .geo-label.secondary { display: none; }
+    #exam-history-atlas .atlas-timeline { padding-inline: 13px; }
+    #exam-history-atlas .rail-caption { display: none; }
+    #exam-history-atlas .rail-current { max-width: 58%; }
+    #exam-history-atlas .rail { height: 79px; }
+    #exam-history-atlas .rail-tick:nth-child(even) { display: none; }
+    #exam-history-atlas .atlas-detail { min-height: 0; margin-block: 6px; }
+    #exam-history-atlas .atlas-sidebar { grid-template-columns: 1fr; margin-block: 5px 10px; }
+    #exam-history-atlas .map-dot span { max-width: 120px; }
+  }
+</style>
+<script>
+(() => {
+  const root = document.getElementById("exam-history-atlas");
+  const { events, connections, maps } = __ATLAS_DATA__;
+  const $ = selector => root.querySelector(selector);
+  const svgNS = "http://www.w3.org/2000/svg";
+  const timeline = $(".atlas-timeline");
+  const rail = $(".rail");
+  const slider = $(".rail-input");
+  const marks = $(".rail-events");
+  const labels = $(".map-labels");
+  const viewport = $(".map-viewport");
+  const mapPlane = $(".map-plane");
+  const mapPoints = $(".map-points");
+  const playButton = $('[data-action="play"]');
+  const directionButton = $('[data-action="direction"]');
+  const themeOptions = {
+    late: ["上编", "旧民主主义革命时期", "1840—1919", "大清", "#453720", "#69502e"],
+    republic: ["上编", "旧民主主义革命时期", "1840—1919", "中华民国", "#353d50", "#55536c"],
+    revolution: ["中编", "新民主主义革命时期", "1919—1949", "中华民国", "#303c54", "#515080"],
+    antiwar: ["中编", "新民主主义革命时期", "1919—1949", "中华民国", "#32465e", "#754e50"],
+    building: ["下编", "社会主义革命和建设", "1949—1978", "中华人民共和国", "#4d303c", "#733c50"],
+    reform: ["下编", "改革开放和现代化建设", "1978—2012", "中华人民共和国", "#283d64", "#426294"],
+    newera: ["下编", "中国特色社会主义新时代", "2012—", "中华人民共和国", "#524420", "#77612d"],
+    marx: ["马原", "马克思主义发展史", "1836—1919", "马克思主义", "#202a3a", "#435878"]
+  };
+  const subjectLabels = { history: "史纲", theory: "毛中特", marx: "马原", all: "全部" };
+  const anchors = new Set(["opium", "tianjing", "boxerprotocol", "mayfourth", "cpc7", "cpc8", "eleventh3", "cpc18",
+    "leaguejustice", "manifesto", "international1", "engels", "october"]);
+  const subjectButtons = [...root.querySelectorAll("[data-subject]")];
+  const byId = new Map(events.map(event => [event.id, event]));
+  const storageKey = "kaoyan-politics-timeline.selection.v1";
+  let subject, visibleEvents, domain, range, cursor, current;
+  let currentMap, regions = new Map();
+  let markerButtons = new Map();
+  let direction = 1;
+  let animationId = 0;
+  let lastTick = 0;
+  let holdUntil = 0;
+  let zoom = 1, panX = 0, panY = 0, pan;
+  let railDrag, skipMarkerClick;
+
+  function theme(event) {
+    if (event.region === "europe") return "marx";
+    const year = Number(event.year);
+    if (year < 1912) return "late";
+    if (year < 1919) return "republic";
+    if (year < 1937) return "revolution";
+    if (year < 1949 || (year === 1949 && event.start < "1949-10-01")) return "antiwar";
+    if (year < 1978) return "building";
+    if (year < 2012) return "reform";
+    return "newera";
+  }
+
+  function fullDate(event) {
+    return `${event.year}年${event.date}`;
+  }
+
+  function save() {
+    if (!current) return;
+    const state = {
+      modelContent: { year: current.year, event: current.name, subject: subjectLabels[subject] },
+      privateContent: { id: current.id, year: current.year, subject, cursor }
+    };
+    if (window.openai?.setWidgetState) {
+      window.openai.setWidgetState(state).catch(() => {});
+      return;
+    }
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(state));
+    } catch {
+      // Some browsers disable storage for local files.
+    }
+  }
+
+  function readSavedSelection() {
+    if (window.openai?.widgetState) return window.openai.widgetState;
+    try {
+      return JSON.parse(localStorage.getItem(storageKey));
+    } catch {
+      return null;
+    }
+  }
+
+  function stop() {
+    if (!animationId) return;
+    cancelAnimationFrame(animationId);
+    animationId = 0;
+    playButton.textContent = "▶ 播放";
+    playButton.setAttribute("aria-pressed", "false");
+  }
+
+  function percent(value) {
+    return (value - range[0]) / (range[1] - range[0]) * 100;
+  }
+
+  function position(element, x, y) {
+    element.style.setProperty("--x", `${x}%`);
+    element.style.setProperty("--y", `${y}%`);
+  }
+
+  function drawRuler() {
+    slider.min = range[0];
+    slider.max = range[1];
+    const periods = subject === "marx"
+      ? [[1836, 1848, "创立"], [1848, 1895, "发展"], [1895, 1924, "列宁阶段"]]
+      : [[1840, 1919, "上编"], [1919, 1949, "中编"], [1949, 2023, "下编"]];
+    $(".timeline-periods").replaceChildren(...periods.filter(([start, end]) => end > range[0] && start < range[1]).map(([start, end, label]) => {
+      const button = document.createElement("button");
+      const left = Math.max(0, percent(start));
+      const right = Math.min(100, percent(end));
+      button.type = "button";
+      button.textContent = label;
+      button.style.setProperty("--left", `${left}%`);
+      button.style.setProperty("--span", `${right - left}%`);
+      button.addEventListener("click", () => {
+        const first = visibleEvents.find(event => event.time >= start && event.time < end);
+        if (first) jump(first);
+      });
+      return button;
+    }));
+    const span = range[1] - range[0];
+    const step = [1, 2, 5, 10, 20, 25, 50].find(value => span / value <= 11) ?? 50;
+    const ticks = [];
+    for (let year = Math.ceil(range[0] / step) * step; year <= range[1]; year += step) {
+      const tick = document.createElement("span");
+      tick.className = "rail-tick";
+      tick.style.setProperty("--x", `${percent(year)}%`);
+      tick.textContent = year;
+      ticks.push(tick);
+    }
+    $(".rail-ticks").replaceChildren(...ticks);
+    markerButtons = new Map();
+    const nodes = [];
+    let lastCaption = -20;
+    let captionCount = 0;
+    for (const event of visibleEvents) {
+      if (event.time < range[0] || event.time > range[1]) continue;
+      const x = percent(event.time);
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "rail-event";
+      dot.style.setProperty("--x", `${x}%`);
+      dot.setAttribute("aria-label", `${fullDate(event)}，${event.name}`);
+      dot.title = `${fullDate(event)} · ${event.name}`;
+      dot.setAttribute("aria-pressed", "false");
+      dot.append(document.createElement("i"));
+      dot.addEventListener("click", click => {
+        if (click.detail && skipMarkerClick === dot) {
+          skipMarkerClick = null;
+          return;
+        }
+        jump(event);
+      });
+      markerButtons.set(event.id, dot);
+      nodes.push(dot);
+      if (anchors.has(event.id) && x > 6 && x < 94 && x - lastCaption > 13) {
+        const caption = document.createElement("span");
+        caption.className = `rail-caption${captionCount++ % 2 ? " is-above" : ""}`;
+        caption.style.setProperty("--x", `${x}%`);
+        caption.dataset.time = event.time;
+        caption.textContent = event.shortName;
+        caption.setAttribute("aria-hidden", "true");
+        lastCaption = x;
+        nodes.push(caption);
+      }
+    }
+    marks.replaceChildren(...nodes);
+  }
+
+  function updateView() {
+    mapPlane.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+  }
+
+  function resetView() {
+    zoom = 1;
+    panX = 0;
+    panY = 0;
+    updateView();
+  }
+
+  function drawMap(region) {
+    if (currentMap === region) return;
+    currentMap = region;
+    $(".atlas-map").dataset.region = region;
+    const map = maps[region];
+    $(".map-grid").setAttribute("d", map.grid ?? "");
+    $(".map-land").setAttribute("d", map.land ?? "");
+    $(".map-borders").setAttribute("d", map.borders ?? "");
+    $(".map-extra").setAttribute("d", map.extra ?? "");
+    regions = new Map((map.regions ?? []).map(area => {
+      const path = document.createElementNS(svgNS, "path");
+      path.setAttribute("d", area.path ?? "");
+      return [area.name, path];
+    }));
+    $(".map-regions").replaceChildren(...regions.values());
+    labels.replaceChildren(...map.labels.map(label => {
+      const node = document.createElement("span");
+      node.className = label.primary ? "geo-label" : "geo-label secondary";
+      position(node, ...label.point);
+      node.textContent = label.name;
+      return node;
+    }));
+    $(".map-attribution").textContent = region === "china" ? "DataV · 现行区划示意" : "Natural Earth · 欧洲地理底图";
+    resetView();
+  }
+
+  function updateDistribution(event) {
+    const shown = $(".distribution").checked && event.region === "china";
+    const highlighted = new Set(shown ? visibleEvents.filter(item => theme(item) === theme(event)).map(item => item.province) : []);
+    for (const [name, shape] of regions) shape.classList.toggle("is-hot", highlighted.has(name));
+    $(".legend-distribution").hidden = !shown;
+  }
+
+  function drawPoints(event) {
+    const x = event.x * 6;
+    const y = event.y * 4.75;
+    $(".map-guide").setAttribute("d", `M${x},${y} Q${(x + 590) / 2},${y - 22} 590,126`);
+    const others = visibleEvents.filter(item =>
+      item !== event && item.region === event.region && item.year === event.year &&
+      Math.hypot(item.x - event.x, item.y - event.y) > 3.2
+    );
+    mapPoints.replaceChildren(...[...others, event].map(item => {
+      const active = item === event;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `map-dot${active ? " is-current" : ""}${item.x > 51 ? " left" : ""}`;
+      position(button, item.x, item.y);
+      button.setAttribute("aria-label", `${item.name}，${item.place}`);
+      button.append(document.createElement("i"));
+      if (active) {
+        const name = document.createElement("span");
+        name.textContent = item.shortName;
+        button.append(name);
+      }
+      button.addEventListener("click", () => jump(item));
+      return button;
+    }));
+  }
+
+  function drawEvent(event) {
+    const [section, phase, years, mapTitle, fill, accent] = themeOptions[theme(event)];
+    const isMarx = event.region === "europe";
+    const context = subject === "theory" ? "毛中特 · 马克思主义中国化时代化" :
+      `${section} · ${phase}（${years}）`;
+    $(".heading-period").textContent = context;
+    root.style.setProperty("--region", fill);
+    root.style.setProperty("--region-hot", accent);
+    $(".map-title strong").textContent = mapTitle;
+    $(".map-title span").textContent = `${event.year}年 · 事件定位`;
+    $(".detail-kicker").textContent = subject === "theory" || isMarx ? "— 理论考点" : "— 历史背景";
+    $(".detail-title").textContent = event.name;
+    $(".detail-meta").textContent = `${isMarx ? "马原" : subject === "theory" ? "毛中特" : "史纲"} · ${phase} · ${event.category}`;
+    $(".detail-fact").textContent = event.fact;
+    $(".detail-exam").textContent = event.exam;
+    $(".location-date").textContent = fullDate(event);
+    $(".location-name").textContent = event.name;
+    $(".location-place").textContent = event.place;
+    $(".area-heading").textContent = isMarx ? "思想坐标" : "地图 · 阶段分布";
+    $(".area-title").textContent = isMarx ? event.place : phase;
+    $(".area-description").textContent = isMarx ? "欧洲地理底图 · 标注事件发生地。" :
+      "底图采用现行区划。着色表示本阶段选录事件分布。";
+    const linked = connections.filter(([from, to]) => from === event.id || to === event.id);
+    const nodes = linked.map(([from, to, relation]) => {
+      const target = byId.get(from === event.id ? to : from);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `↗ ${target.shortName}`;
+      const label = document.createElement("span");
+      label.textContent = relation;
+      button.append(label);
+      button.addEventListener("click", () => jump(target));
+      return button;
+    });
+    $(".related-events").replaceChildren(...nodes);
+    $(".related-card").hidden = nodes.length === 0;
+    drawMap(event.region);
+    updateDistribution(event);
+    drawPoints(event);
+  }
+
+  function eventAt(time) {
+    return visibleEvents.findLast(event => event.time <= time + 0.00001) ?? visibleEvents[0];
+  }
+
+  function syncCursor(time, selected) {
+    cursor = Math.min(domain[1], Math.max(domain[0], time));
+    const event = selected ?? eventAt(cursor);
+    if (event !== current) {
+      current = event;
+      drawEvent(event);
+    }
+    slider.value = cursor;
+    slider.setAttribute("aria-valuetext", `${Math.floor(cursor)}年，当前事件 ${fullDate(event)} ${event.name}`);
+    $(".display-year").textContent = Math.floor(cursor);
+    rail.style.setProperty("--progress", `${Math.min(100, Math.max(0, percent(cursor)))}%`);
+    const selectedLabel = $(".rail-current");
+    const selectedPosition = percent(event.time);
+    selectedLabel.hidden = selectedPosition < 0 || selectedPosition > 100;
+    selectedLabel.textContent = event.shortName;
+    rail.style.setProperty("--selected-label", `${selectedPosition}%`);
+    for (const caption of marks.querySelectorAll(".rail-caption.is-above")) {
+      caption.hidden = Math.abs(percent(Number(caption.dataset.time)) - selectedPosition) < 14;
+    }
+    for (const [id, dot] of markerButtons) dot.setAttribute("aria-pressed", String(id === event.id));
+  }
+
+  function setSubject(next, time, selected) {
+    subject = next;
+    visibleEvents = events.filter(event => next === "all" || event.topics.includes(next));
+    domain = next === "marx" ? [1828, 1933] : [1836, 2023];
+    range = [...domain];
+    for (const button of subjectButtons) button.setAttribute("aria-pressed", String(button.dataset.subject === next));
+    current = null;
+    drawRuler();
+    syncCursor(time, selected);
+  }
+
+  function jump(event) {
+    stop();
+    if (!visibleEvents.includes(event)) {
+      setSubject(event.topics[0], event.time, event);
+    } else {
+      if (event.time < range[0] || event.time > range[1]) {
+        range = [...domain];
+        drawRuler();
+      }
+      syncCursor(event.time, event);
+    }
+    save();
+  }
+
+  function stepEvent(amount) {
+    const index = visibleEvents.indexOf(current) + amount;
+    const event = visibleEvents[Math.max(0, Math.min(index, visibleEvents.length - 1))];
+    jump(event);
+  }
+
+  function tick(now) {
+    const elapsed = Math.min(80, now - lastTick);
+    lastTick = now;
+    if (now >= holdUntil) {
+      const edge = direction === 1 ? range[1] : range[0];
+      const distance = elapsed / 1000 * Number($(".speed").value) * 9 * direction;
+      const next = direction === 1 ? Math.min(edge, cursor + distance) : Math.max(edge, cursor + distance);
+      const passed = direction === 1 ? visibleEvents.find(event => event.time > cursor && event.time <= next)
+        : visibleEvents.findLast(event => event.time < cursor && event.time >= next);
+      if (passed && $(".slow").checked) {
+        syncCursor(passed.time, passed);
+        holdUntil = now + 270 / Number($(".speed").value);
+      } else {
+        syncCursor(next);
+      }
+      if (cursor === edge) {
+        stop();
+        save();
+        return;
+      }
+    }
+    animationId = requestAnimationFrame(tick);
+  }
+
+  function togglePlayback() {
+    if (animationId) {
+      stop();
+      save();
+      return;
+    }
+    if (direction === 1 && cursor >= range[1]) syncCursor(range[0]);
+    if (direction === -1 && cursor <= range[0]) syncCursor(range[1]);
+    playButton.textContent = "Ⅱ 暂停";
+    playButton.setAttribute("aria-pressed", "true");
+    lastTick = performance.now();
+    holdUntil = 0;
+    animationId = requestAnimationFrame(tick);
+  }
+
+  function setZoom(factor) {
+    zoom = Math.min(4, Math.max(1, zoom * factor));
+    if (zoom === 1) resetView();
+    else updateView();
+  }
+
+  for (const button of subjectButtons) {
+    button.addEventListener("click", () => {
+      const next = button.dataset.subject;
+      if (next === subject) return;
+      stop();
+      const first = next === "marx" ? byId.get("leaguejustice") : byId.get("nanjing");
+      const keep = next === "all" || current.topics.includes(next);
+      setSubject(next, keep ? cursor : next === "theory" ? 1938.75 : first.time, keep ? current : null);
+      save();
+    });
+  }
+  $('[data-action="previous"]').addEventListener("click", () => stepEvent(-1));
+  $('[data-action="next"]').addEventListener("click", () => stepEvent(1));
+  playButton.addEventListener("click", togglePlayback);
+  directionButton.addEventListener("click", () => {
+    direction *= -1;
+    holdUntil = 0;
+    directionButton.textContent = direction === 1 ? "→ 正放" : "← 倒放";
+    directionButton.setAttribute("aria-pressed", String(direction === -1));
+  });
+  $(".sidebar-toggle").addEventListener("click", event => {
+    const hidden = root.classList.toggle("hide-sidebars");
+    event.currentTarget.textContent = hidden ? "显示侧栏" : "隐藏侧栏";
+    event.currentTarget.setAttribute("aria-pressed", String(hidden));
+  });
+  $(".basemap").addEventListener("change", event => viewport.classList.toggle("no-map", !event.target.checked));
+  $(".distribution").addEventListener("change", () => updateDistribution(current));
+  $(".labels").addEventListener("change", event => { labels.hidden = !event.target.checked; });
+  $(".hints").addEventListener("change", event => { $(".atlas-help").hidden = !event.target.checked; });
+  $('[data-zoom="in"]').addEventListener("click", () => setZoom(1.35));
+  $('[data-zoom="out"]').addEventListener("click", () => setZoom(1 / 1.35));
+  $('[data-zoom="reset"]').addEventListener("click", resetView);
+  viewport.addEventListener("wheel", event => {
+    event.preventDefault();
+    setZoom(event.deltaY < 0 ? 1.18 : 1 / 1.18);
+  }, { passive: false });
+  viewport.addEventListener("pointerdown", event => {
+    if (event.button !== 0 || event.target.closest("button")) return;
+    pan = { id: event.pointerId, startX: event.clientX - panX, startY: event.clientY - panY };
+    viewport.setPointerCapture(event.pointerId);
+    viewport.classList.add("is-panning");
+  });
+  viewport.addEventListener("pointermove", event => {
+    if (pan?.id !== event.pointerId) return;
+    panX = Math.max(-viewport.clientWidth * zoom / 2, Math.min(viewport.clientWidth * zoom / 2, event.clientX - pan.startX));
+    panY = Math.max(-viewport.clientHeight * zoom / 2, Math.min(viewport.clientHeight * zoom / 2, event.clientY - pan.startY));
+    updateView();
+  });
+  viewport.addEventListener("lostpointercapture", () => {
+    pan = null;
+    viewport.classList.remove("is-panning");
+  });
+  slider.addEventListener("input", () => {
+    stop();
+    syncCursor(slider.valueAsNumber);
+  });
+  slider.addEventListener("change", save);
+  marks.addEventListener("pointerdown", event => {
+    const dot = event.target.closest(".rail-event");
+    if (!dot || event.button !== 0) return;
+    skipMarkerClick = null;
+    railDrag = { pointerId: event.pointerId, dot, x: event.clientX, moved: false };
+    dot.setPointerCapture(event.pointerId);
+  });
+  marks.addEventListener("pointermove", event => {
+    if (railDrag?.pointerId !== event.pointerId) return;
+    if (!railDrag.moved && Math.abs(event.clientX - railDrag.x) < 4) return;
+    railDrag.moved = true;
+    stop();
+    const box = rail.getBoundingClientRect();
+    const fraction = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
+    syncCursor(range[0] + fraction * (range[1] - range[0]));
+  });
+  marks.addEventListener("lostpointercapture", () => {
+    if (railDrag?.moved) {
+      skipMarkerClick = railDrag.dot;
+      save();
+    }
+    railDrag = null;
+  });
+  timeline.addEventListener("wheel", event => {
+    if (!event.target.closest(".rail")) return;
+    event.preventDefault();
+    stop();
+    const full = domain[1] - domain[0];
+    const width = Math.min(full, Math.max(8, (range[1] - range[0]) * (event.deltaY < 0 ? 0.75 : 1 / 0.75)));
+    const center = Math.min(range[1], Math.max(range[0], cursor));
+    const start = Math.min(domain[1] - width, Math.max(domain[0], center - width / 2));
+    range = [start, start + width];
+    drawRuler();
+    syncCursor(cursor, current);
+  }, { passive: false });
+  root.addEventListener("keydown", event => {
+    if (event.target.matches("input:not(.rail-input),select,textarea")) return;
+    if ((event.code === "Space" && !event.target.matches("button")) || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      if (event.code === "Space") togglePlayback();
+      else stepEvent(event.key === "ArrowRight" ? 1 : -1);
+    }
+  });
+
+  function restore(widgetState) {
+    const saved = widgetState?.privateContent;
+    const selected = byId.get(saved?.id) ?? byId.get("nanjing");
+    const preferred = saved?.subject;
+    const next = Object.hasOwn(subjectLabels, preferred) && (preferred === "all" || selected.topics.includes(preferred))
+      ? preferred : selected.topics[0];
+    const time = Number.isFinite(saved?.cursor) ? saved.cursor : selected.time;
+    if (current === selected && subject === next && time === cursor) return;
+    stop();
+    setSubject(next, time, selected);
+  }
+  restore(readSavedSelection());
+  window.addEventListener("openai:set_globals", event => {
+    if (event.detail?.globals && Object.hasOwn(event.detail.globals, "widgetState")) restore(event.detail.globals.widgetState);
+  });
+})();
+</script>
