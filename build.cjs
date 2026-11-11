@@ -3,10 +3,31 @@ const path = require("node:path");
 const d3 = require("./vendor/d3.min.js");
 const topojson = require("./vendor/topojson-client.min.js");
 const { events, connections } = require("./src/reference-atlas-events.cjs");
+const resources = require("./src/timeline-resources.cjs");
 
 const width = 600;
 const height = 475;
 const read = name => JSON.parse(fs.readFileSync(path.join(__dirname, "data", name), "utf8"));
+const photos = {};
+const eventIds = new Set(events.map(event => event.id));
+const photoRecords = read("timeline-photos.json");
+for (const id of eventIds) {
+  if (!resources[id]?.some(item => ["史料", "文献", "报道"].includes(item.type))) {
+    throw new Error(`Missing a reading source for ${id}`);
+  }
+}
+for (const id of Object.keys(resources)) {
+  if (!eventIds.has(id) || resources[id].some(item => new URL(item.url).protocol !== "https:")) {
+    throw new Error(`Invalid resource for ${id}`);
+  }
+}
+for (const [id, { file, mime, ...credit }] of Object.entries(photoRecords)) {
+  if (!eventIds.has(id) || !/^history-images\/[a-z0-9]+\.webp$/.test(file) || mime !== "image/webp") {
+    throw new Error(`Invalid photo for ${id}`);
+  }
+  const encoded = fs.readFileSync(path.join(__dirname, "data", file)).toString("base64");
+  photos[id] = { ...credit, data: `data:${mime};base64,${encoded}` };
+}
 const world = read("countries-50m.json");
 const land = topojson.feature(world, world.objects.land);
 const borders = topojson.mesh(world, world.objects.countries, (a, b) => a !== b);
@@ -81,9 +102,9 @@ const payload = events.map(({ coordinates: point, ...event }) => {
 });
 const template = fs.readFileSync(path.join(__dirname, "src", "reference-atlas.html"), "utf8");
 const shell = fs.readFileSync(path.join(__dirname, "src", "standalone.html"), "utf8");
-const fragment = template.replace("__ATLAS_DATA__", () => JSON.stringify({ events: payload, connections, maps })
+const fragment = template.replace("__ATLAS_DATA__", () => JSON.stringify({ events: payload, connections, maps, resources, photos })
   .replaceAll("<", "\\u003c"));
 const output = shell.replace("<!-- ATLAS -->", () => fragment);
 const destination = process.argv[2] ?? path.join(__dirname, "index.html");
 fs.writeFileSync(destination, output);
-console.log(`Built ${path.basename(destination)}: ${payload.length} events, ${Object.keys(maps).length} maps`);
+console.log(`Built ${path.basename(destination)}: ${payload.length} events, ${Object.keys(photos).length} photos`);

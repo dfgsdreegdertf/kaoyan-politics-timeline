@@ -79,6 +79,7 @@
       <h4>关键考点</h4>
       <p class="detail-exam"></p>
     </div>
+    <button type="button" class="detail-resources" aria-controls="atlas-study-resources">查看资料与影像</button>
   </article>
 
   <aside class="atlas-sidebar" aria-label="事件定位与考点关联">
@@ -99,6 +100,28 @@
       <div class="related-events"></div>
     </section>
   </aside>
+  <section id="atlas-study-resources" class="atlas-resources" aria-labelledby="atlas-resources-heading">
+    <header class="resources-header">
+      <div>
+        <h3 id="atlas-resources-heading" tabindex="-1">资料与影像</h3>
+        <p class="resources-context"></p>
+      </div>
+    </header>
+    <div class="resources-content">
+      <figure class="resource-photo" hidden>
+        <a class="photo-source" target="_blank" rel="noopener noreferrer">
+          <img class="resource-image" alt="" decoding="async">
+        </a>
+        <figcaption>
+          <strong class="photo-title"></strong>
+          <span class="photo-caption"></span>
+          <span class="photo-credit"></span>
+          <a class="photo-license" target="_blank" rel="noopener noreferrer" hidden></a>
+        </figcaption>
+      </figure>
+      <ul class="resource-links"></ul>
+    </div>
+  </section>
   <p class="atlas-help">空格 播放或暂停 <span>·</span> ← → 切换事件 <span>·</span> 拖动时间轴切换年份 <span>·</span> 滚轮缩放地图或时间轴</p>
 </section>
 <style>
@@ -109,7 +132,7 @@
     --gold-dim: #8c7538; --blue: #86b8e8; --region: #453c24; --region-hot: #6d572c;
     box-sizing: border-box; display: grid;
     grid-template-columns: minmax(0, 1.08fr) minmax(0, 1.82fr) minmax(0, .98fr);
-    grid-template-areas: "header header header" "detail map sidebar" "timeline timeline timeline" "help help help";
+    grid-template-areas: "header header header" "detail map sidebar" "timeline timeline timeline" "resources resources resources" "help help help";
     gap: 0 12px; padding-inline: 15px;
     background: var(--bg); color: var(--text); font: 14px/1.5 "Microsoft YaHei", "PingFang SC", sans-serif;
     border: 1px solid #222330; border-radius: 12px; overflow: hidden;
@@ -123,7 +146,8 @@
   }
   #exam-history-atlas button { cursor: pointer; }
   #exam-history-atlas button:hover { color: var(--text); border-color: #5c5e74; }
-  #exam-history-atlas button:focus-visible, #exam-history-atlas input:focus-visible, #exam-history-atlas select:focus-visible {
+  #exam-history-atlas button:focus-visible, #exam-history-atlas input:focus-visible,
+  #exam-history-atlas select:focus-visible, #exam-history-atlas a:focus-visible {
     outline: 2px solid var(--gold); outline-offset: 2px;
   }
   #exam-history-atlas .atlas-header {
@@ -177,6 +201,7 @@
   #exam-history-atlas .detail-section p { margin-top: 7px; color: #c8cbd8; line-height: 1.8; overflow-wrap: anywhere; }
   #exam-history-atlas .detail-highlight { border-left: 1px solid var(--gold-dim); padding-left: 10px; }
   #exam-history-atlas .detail-highlight h4, #exam-history-atlas .detail-highlight p { color: var(--gold); }
+  #exam-history-atlas .detail-resources { margin-top: 18px; padding: 7px 10px; color: var(--gold); border-color: #625333; font-size: 12px; }
 
   #exam-history-atlas .atlas-map {
     grid-area: map; align-self: stretch; min-height: 406px; position: relative; isolation: isolate; overflow: hidden;
@@ -316,21 +341,54 @@
     color: var(--dim); font-size: 11px; white-space: nowrap;
   }
   #exam-history-atlas .rail-caption.is-above { top: 5px; }
+  #exam-history-atlas .atlas-resources {
+    grid-area: resources; min-width: 0; padding: 16px 0 18px; border-top: 1px solid var(--border); scroll-margin-top: 12px;
+  }
+  #exam-history-atlas .resources-header h3 { color: var(--text); font-size: 17px; line-height: 1.35; }
+  #exam-history-atlas .resources-context { margin-top: 3px; color: var(--muted); font-size: 12px; }
+  #exam-history-atlas .resources-content { display: grid; gap: 12px; margin-top: 11px; align-items: start; }
+  #exam-history-atlas .resources-content.has-photo { grid-template-columns: minmax(0, .92fr) minmax(0, 2.08fr); }
+  #exam-history-atlas .resource-photo {
+    min-width: 0; margin: 0; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; background: var(--card);
+  }
+  #exam-history-atlas .photo-source {
+    display: block; background: #0c0d14; aspect-ratio: 16 / 10; text-decoration: none;
+  }
+  #exam-history-atlas .photo-source:focus-visible { outline-offset: -3px; }
+  #exam-history-atlas .resource-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+  #exam-history-atlas figcaption { padding: 9px 11px; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+  #exam-history-atlas figcaption strong { display: block; color: var(--text); font-size: 13px; }
+  #exam-history-atlas figcaption .photo-caption { display: block; margin-top: 2px; }
+  #exam-history-atlas .photo-credit, #exam-history-atlas .photo-license { color: var(--muted); font-size: 11px; }
+  #exam-history-atlas .photo-license { margin-left: 5px; color: var(--blue); }
+  #exam-history-atlas .resource-links {
+    display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); padding: 0; list-style: none;
+  }
+  #exam-history-atlas .resource-links li { min-width: 0; }
+  #exam-history-atlas .resource-link {
+    display: grid; height: 100%; gap: 6px; padding: 11px 13px; border: 1px solid var(--border); border-radius: 7px;
+    text-decoration: none; background: var(--card); color: var(--text); overflow-wrap: anywhere;
+  }
+  #exam-history-atlas .resource-link:hover { border-color: #625333; }
+  #exam-history-atlas .resource-kind { color: var(--gold); font-size: 11px; letter-spacing: .06em; }
+  #exam-history-atlas .resource-link strong { font-size: 14px; line-height: 1.4; }
+  #exam-history-atlas .resource-note { color: var(--muted); font-size: 12px; }
+  #exam-history-atlas .resource-origin { color: var(--blue); font-size: 11px; }
   #exam-history-atlas .atlas-help {
     grid-area: help; margin-inline: -15px; padding: 5px 12px 7px; border-top: 1px solid #20212b;
     text-align: center; color: var(--dim); font-size: 11px; overflow-wrap: anywhere;
   }
   #exam-history-atlas .atlas-help span { margin-inline: 4px; }
-  #exam-history-atlas.hide-sidebars { grid-template-columns: 1fr; grid-template-areas: "header" "map" "timeline" "help"; }
+  #exam-history-atlas.hide-sidebars { grid-template-columns: 1fr; grid-template-areas: "header" "map" "timeline" "resources" "help"; }
   #exam-history-atlas.hide-sidebars .atlas-detail, #exam-history-atlas.hide-sidebars .atlas-sidebar { display: none; }
   #exam-history-atlas.hide-sidebars .atlas-map { min-height: 480px; }
   @media (max-width: 790px) {
-    #exam-history-atlas { grid-template-columns: minmax(0, .92fr) minmax(0, 1.65fr); grid-template-areas: "header header" "detail map" "timeline timeline" "sidebar sidebar" "help help"; }
+    #exam-history-atlas { grid-template-columns: minmax(0, .92fr) minmax(0, 1.65fr); grid-template-areas: "header header" "detail map" "timeline timeline" "resources resources" "sidebar sidebar" "help help"; }
     #exam-history-atlas .atlas-sidebar { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
     #exam-history-atlas .atlas-subjects { margin-left: 0; }
   }
   @media (max-width: 530px) {
-    #exam-history-atlas { grid-template-columns: minmax(0, 1fr); grid-template-areas: "header" "map" "timeline" "detail" "sidebar" "help"; }
+    #exam-history-atlas { grid-template-columns: minmax(0, 1fr); grid-template-areas: "header" "map" "timeline" "detail" "resources" "sidebar" "help"; }
     #exam-history-atlas .atlas-heading { gap: 10px; }
     #exam-history-atlas .display-year { font-size: 38px; }
     #exam-history-atlas h2 { font-size: 14px; letter-spacing: .025em; }
@@ -349,6 +407,7 @@
     #exam-history-atlas .rail { height: 79px; }
     #exam-history-atlas .rail-tick:nth-child(even) { display: none; }
     #exam-history-atlas .atlas-detail { min-height: 0; margin-block: 6px; }
+    #exam-history-atlas .resources-content.has-photo { grid-template-columns: 1fr; }
     #exam-history-atlas .atlas-sidebar { grid-template-columns: 1fr; margin-block: 5px 10px; }
     #exam-history-atlas .map-dot span { max-width: 120px; }
   }
@@ -356,7 +415,7 @@
 <script>
 (() => {
   const root = document.getElementById("exam-history-atlas");
-  const { events, connections, maps } = __ATLAS_DATA__;
+  const { events, connections, maps, resources, photos } = __ATLAS_DATA__;
   const $ = selector => root.querySelector(selector);
   const svgNS = "http://www.w3.org/2000/svg";
   const timeline = $(".atlas-timeline");
@@ -593,6 +652,60 @@
     }));
   }
 
+  function drawResources(event) {
+    $(".resources-context").textContent = `${fullDate(event)} · ${event.name}`;
+    const photo = photos[event.id];
+    const figure = $(".resource-photo");
+    const image = $(".resource-image");
+    figure.hidden = !photo;
+    $(".resources-content").classList.toggle("has-photo", Boolean(photo));
+    if (photo) {
+      const source = $(".photo-source");
+      source.href = photo.url;
+      source.setAttribute("aria-label", `查看原图与授权 · ${photo.title}`);
+      image.src = photo.data;
+      image.alt = photo.title;
+      $(".photo-title").textContent = photo.title;
+      $(".photo-caption").textContent = photo.caption;
+      $(".photo-credit").textContent = photo.licenseUrl
+        ? `${photo.credit} · 缩略图`
+        : `${photo.credit} · ${photo.license} · 缩略图`;
+      const license = $(".photo-license");
+      license.hidden = !photo.licenseUrl;
+      if (photo.licenseUrl) {
+        license.href = photo.licenseUrl;
+        license.textContent = photo.license;
+      }
+    } else {
+      image.removeAttribute("src");
+      image.alt = "";
+    }
+
+    const items = resources[event.id].map(item => {
+      const li = document.createElement("li");
+      const link = document.createElement("a");
+      link.className = "resource-link";
+      link.href = item.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      const kind = document.createElement("span");
+      kind.className = "resource-kind";
+      kind.textContent = item.type;
+      const title = document.createElement("strong");
+      title.textContent = item.title;
+      const note = document.createElement("span");
+      note.className = "resource-note";
+      note.textContent = item.note;
+      const origin = document.createElement("span");
+      origin.className = "resource-origin";
+      origin.textContent = `${item.source} ↗`;
+      link.append(kind, title, note, origin);
+      li.append(link);
+      return li;
+    });
+    $(".resource-links").replaceChildren(...items);
+  }
+
   function drawEvent(event) {
     const [section, phase, years, mapTitle, fill, accent] = themeOptions[theme(event)];
     const isMarx = event.region === "europe";
@@ -632,6 +745,7 @@
     drawMap(event.region);
     updateDistribution(event);
     drawPoints(event);
+    drawResources(event);
   }
 
   function eventAt(time) {
@@ -760,6 +874,12 @@
     const hidden = root.classList.toggle("hide-sidebars");
     event.currentTarget.textContent = hidden ? "显示侧栏" : "隐藏侧栏";
     event.currentTarget.setAttribute("aria-pressed", String(hidden));
+  });
+  $(".detail-resources").addEventListener("click", () => {
+    stop();
+    const section = $(".atlas-resources");
+    section.scrollIntoView({ block: "start", behavior: "instant" });
+    $("#atlas-resources-heading").focus({ preventScroll: true });
   });
   $(".basemap").addEventListener("change", event => viewport.classList.toggle("no-map", !event.target.checked));
   $(".distribution").addEventListener("change", () => updateDistribution(current));

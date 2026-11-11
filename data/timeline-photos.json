@@ -1,0 +1,122 @@
+{
+  "nanjing": {
+    "file": "history-images/nanjing.webp",
+    "mime": "image/webp",
+    "title": "1942 年出版物中的《南京条约》条款图解",
+    "caption": "历史漫画，可对照外交部资料理解条约背景。",
+    "credit": "复旦大学 / 研究图书馆中心馆藏",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:Articles_of_the_Treaty_of_Nanking.jpg"
+  },
+  "capital": {
+    "file": "history-images/capital.webp",
+    "mime": "image/webp",
+    "title": "《资本论》第一卷标题页",
+    "caption": "德文版文献图版",
+    "credit": "卡尔·马克思",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:Kapital_titel_bd1.png"
+  },
+  "commune": {
+    "file": "history-images/commune.webp",
+    "mime": "image/webp",
+    "title": "1871 年巴黎公社时期的街垒",
+    "caption": "摄于巴黎市政厅广场与里沃利街交界附近。",
+    "credit": "Pierre-Ambroise Richebourg / 大都会艺术博物馆",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:Barricade_Paris_1871_by_Pierre-Ambrose_Richebourg.jpg"
+  },
+  "shimonoseki": {
+    "file": "history-images/shimonoseki.webp",
+    "mime": "image/webp",
+    "title": "《马关条约》签署场景版画",
+    "caption": "久保田米僊创作于 1896 年。",
+    "credit": "久保田米僊 / 法国国家图书馆 Gallica",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:%E3%80%8A%E9%A9%AC%E5%85%B3%E6%9D%A1%E7%BA%A6%E3%80%8B%E7%AD%BE%E5%AD%97%E6%97%B6%E7%9A%84%E6%83%85%E6%99%AF.jpg"
+  },
+  "wuchang": {
+    "file": "history-images/wuchang.webp",
+    "mime": "image/webp",
+    "title": "武汉辛亥革命武昌起义纪念馆旧址",
+    "caption": "2004 年拍摄的旧址外景。",
+    "credit": "Mongol",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+    "url": "https://commons.wikimedia.org/wiki/File:WuchangUprising.jpg"
+  },
+  "october": {
+    "file": "history-images/october.webp",
+    "mime": "image/webp",
+    "title": "1917 年 11 月彼得格勒的布尔什维克部队",
+    "caption": "十月革命时期档案照片",
+    "credit": "作者不详 / Popperfoto、ENA",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:Bolshevik_troops_in_Petrograd,_November_1917.jpg"
+  },
+  "mayfourth": {
+    "file": "history-images/mayfourth.webp",
+    "mime": "image/webp",
+    "title": "1919 年五四运动中的女学生游行",
+    "caption": "档案照片",
+    "credit": "作者不详",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:Female_students_participate_in_demonstration_as_part_of_the_May_Fourth_Movement,_in_1919.jpg"
+  },
+  "cpc1": {
+    "file": "history-images/cpc1.webp",
+    "mime": "image/webp",
+    "title": "中国共产党第一次全国代表大会上海会址",
+    "caption": "2006 年拍摄的会址外景。",
+    "credit": "verkhovensky",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Site_of_the_First_National_Congress_of_the_Communist_Party_of_China.jpg"
+  },
+  "zunyi": {
+    "file": "history-images/zunyi.webp",
+    "mime": "image/webp",
+    "title": "贵州遵义会议会址",
+    "caption": "2024 年拍摄的会址外景。",
+    "credit": "xiquinhosilva",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "url": "https://commons.wikimedia.org/wiki/File:Zunyi_Conference_Site.jpg"
+  },
+  "prc": {
+    "file": "history-images/prc.webp",
+    "mime": "image/webp",
+    "title": "1949 年 10 月 1 日开国大典",
+    "caption": "通讯社发布的修版档案照片。",
+    "credit": "作者不详 / Lehtikuva",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:Mao_proclaiming_establishment_of_PRC.jpg"
+  },
+  "eleventh3": {
+    "file": "history-images/eleventh3.webp",
+    "mime": "image/webp",
+    "title": "邓小平 1979 年照片",
+    "caption": "十一届三中全会后的相关人物照片。",
+    "credit": "Karl H. Schumacher / 美国国家档案馆",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:DengXiaoping.jpg"
+  },
+  "manifesto": {
+    "title": "1848 年德文初版《共产党宣言》封面",
+    "caption": "初版文献图版。",
+    "credit": "马克思、恩格斯",
+    "license": "公有领域",
+    "licenseUrl": "",
+    "url": "https://commons.wikimedia.org/wiki/File:Communist-manifesto.png",
+    "file": "history-images/manifesto.webp",
+    "mime": "image/webp"
+  }
+}
